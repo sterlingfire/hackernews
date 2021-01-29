@@ -14,26 +14,40 @@ class StoryList extends React.Component{
 
   state = {
     stories:[],
-    searchTerm:"react",
+    searchTerm:"",
+    // prevSearchTerm:"",
   };
 
   async componentDidMount() {
     console.log("component mount");
     console.log("this:", this);
-    const res = await axios.get(`${this.props.base_url}?query=${this.state.searchTerm}`);
-    this.setState({stories:res.hits});
+    const res = await axios.get(`${this.props.base_url}`);
+    this.setState({stories:res.data.hits});
   }
 
-  async componentDidUpdate() {
+  // Takes prevProps and prevStates and it's called with this
+  async componentDidUpdate(prevProps, prevStates) {
     console.log("component update");
     console.log("this.state:", this.state);
-    const res = await axios.get(`${this.props.base_url}?query=${this.state.searchTerm}`);
-    this.setState({stories:res.hits});
+    
+    if(this.state.searchTerm !== prevStates.searchTerm){
+      console.log("search ran");
+      const res = await axios.get(`${this.props.base_url}?query=${this.state.searchTerm}`);
+      this.setState({stories:res.data.hits});
+    }
   }
+
+  // One option: turn into async fn
+  handleSearch = (newSearchTerm) => {
+    this.setState({
+      searchTerm: newSearchTerm,
+    })
+  };
+
   render() {
     return (
       <div>
-        <SearchForm />
+        <SearchForm handleSearch={this.handleSearch}/>
         { this.state.stories && this.state.stories.map(story => <Story key={story.objectID} />)}
       </div>
     );
