@@ -29,7 +29,7 @@ class StoryList extends React.Component{
   async componentDidUpdate(prevProps, prevStates) {
     console.log("component update");
     console.log("this.state:", this.state);
-    
+
     if(this.state.searchTerm !== prevStates.searchTerm){
       console.log("search ran");
       const res = await axios.get(`${this.props.base_url}?query=${this.state.searchTerm}`);
@@ -48,7 +48,7 @@ class StoryList extends React.Component{
     return (
       <div>
         <SearchForm handleSearch={this.handleSearch}/>
-        { this.state.stories && this.state.stories.map(story => <Story key={story.objectID} />)}
+        { this.state.stories && this.state.stories.map(story => <Story key={story.objectID} story={story}/>)}
       </div>
     );
   }
